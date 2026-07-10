@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudyBuddy — AI Peer Mentorship Ecosystem</title>
+  <meta name="description" content="StudyBuddy is a student-centric peer-to-peer mentoring platform using AI to match learners and senior students. Learn, practice, build projects, and teach others.">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Sticky Global Header -->
+  <header>
+    <div class="logo" id="navbar-logo">
+      <div class="logo-icon">SB</div>
+      StudyBuddy
+    </div>
+    
+    <div class="header-controls">
+      <!-- Economy pills showing credits and reputation -->
+      <div class="economy-pills">
+        <div class="pill credits" title="Your study credits used to book sessions">
+          <span>🪙</span> <span id="pill-credits-value">100</span>
+        </div>
+        <div class="pill reputation" title="Your teaching reputation metric">
+          <span>★</span> <span id="pill-reputation-value">15</span> <span id="pill-rep-lbl" style="font-weight: normal; margin-left: 2px;">Reputation</span>
+        </div>
+      </div>
+      
+      <!-- Role Switcher -->
+      <div class="role-switcher-container">
+        <button id="btn-role-learner" class="role-btn active learner">
+          <span>🎓</span> Learner
+        </button>
+        <button id="btn-role-mentor" class="role-btn">
+          <span>👨‍🏫</span> Mentor
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Main View Grid -->
+  <main>
+
+    <!-- 1. LANDING VIEW -->
+    <section id="view-landing" class="view-section active">
+      <div class="landing-hero">
+        <h1>Learn from Seniors.<br><span class="learner-gradient-text">Become a Mentor.</span></h1>
+        <p>StudyBuddy is an AI-powered peer learning network where students teach students. Share your verified achievements, gain leadership skills, and earn credits within a modern student economy.</p>
+        <div class="cta-group">
+          <button class="btn btn-learner" onclick="navigateTo('onboarding')">Get Started as Learner</button>
+          <button class="btn btn-secondary" onclick="switchRole('mentor')">Explore Mentor Portal</button>
+        </div>
+      </div>
+      
+      <div class="features-grid">
+        <div class="feature-card learner-themed">
+          <div class="feature-icon-wrapper">🎯</div>
+          <h3>AI Guided Roadmaps</h3>
+          <p>Input your dream career. The AI analyzes your background, maps your skill gaps, and matches you with peers who recently completed those exact milestones.</p>
+        </div>
+        <div class="feature-card mentor-themed">
+          <div class="feature-icon-wrapper">🪙</div>
+          <h3>Skill Economy</h3>
+          <p>Book learning sessions with credits. Earn credits back by teaching subjects you master. No money involved, just a continuous cycle of knowledge.</p>
+        </div>
+        <div class="feature-card learner-themed">
+          <div class="feature-icon-wrapper">★</div>
+          <h3>Reputation Portfolios</h3>
+          <p>Convert your internships, open-source code, and hackathons into verified mentoring profiles. Stand out to top industry recruiters with proven leadership.</p>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 2. ONBOARDING VIEW -->
+    <section id="view-onboarding" class="view-section">
+      <div class="onboarding-container">
+        <div class="progress-dots">
+          <div id="dot-1" class="dot active"></div>
+          <div id="dot-2" class="dot"></div>
+          <div id="dot-3" class="dot"></div>
+        </div>
+        
+        <!-- Step 1: Career Dream -->
+        <div id="step-1" class="onboarding-step active">
+          <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem;" class="learner-gradient-text">Choose your Career Vision</h2>
+          <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Select your path. StudyBuddy AI will build a custom roadmap to bridge your skill gaps.</p>
+          
+          <div class="selection-grid">
+            <div class="select-card selected" data-career="AI Engineer" onclick="selectCareerOption(this)">
+              <h4>AI Engineer</h4>
+              <p>Python, NumPy, Pandas, ML Models</p>
+            </div>
+            <div class="select-card" data-career="Frontend Developer" onclick="selectCareerOption(this)">
+              <h4>Frontend Developer</h4>
+              <p>HTML/CSS, JS ES6, React, Git</p>
+            </div>
+            <div class="select-card" data-career="Product Designer" onclick="selectCareerOption(this)">
+              <h4>Product Designer</h4>
+              <p>Figma, UI/UX, User Research</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Step 2: Skill Inventory -->
+        <div id="step-2" class="onboarding-step">
+          <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem;" class="learner-gradient-text">What do you already know?</h2>
+          <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Check the skills you have already studied so we can skip them in your custom roadmap.</p>
+          
+          <div id="onboarding-checklist-container" class="checkbox-grid">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+        
+        <!-- Step 3: Commitment -->
+        <div id="step-3" class="onboarding-step">
+          <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem;" class="learner-gradient-text">Availability & Preferences</h2>
+          <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Optimize your learning speed. How do you prefer to digest hard technical concepts?</p>
+          
+          <div class="form-group">
+            <label for="hours-select">Weekly study budget</label>
+            <select id="hours-select" class="form-input">
+              <option value="5">5 - 10 hours per week</option>
+              <option value="15" selected>10 - 20 hours per week</option>
+              <option value="25">20+ hours per week</option>
+            </select>
+          </div>
+          
+          <div class="form-group" style="margin-top: 1.2rem;">
+            <label for="pref-select">Preferred style</label>
+            <select id="pref-select" class="form-input">
+              <option value="project">Project-based and practical (Recommended)</option>
+              <option value="theory">Theoretical and conceptual</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="onboarding-nav">
+          <button id="btn-back" class="btn btn-secondary" onclick="prevOnboardingStep()">Back</button>
+          <button id="btn-next" class="btn btn-learner" onclick="nextOnboardingStep()">Continue</button>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 3. LEARNER DASHBOARD VIEW -->
+    <section id="view-learner-dashboard" class="view-section">
+      <div class="dashboard-grid">
+        <!-- Sidebar -->
+        <div class="sidebar">
+          <div class="user-card">
+            <div class="avatar learner">A</div>
+            <div class="user-info">
+              <h3 id="learner-profile-name">Ananya</h3>
+              <p id="learner-profile-career">AI Engineer path</p>
+            </div>
+          </div>
+          
+          <nav class="sidebar-menu">
+            <div id="menu-roadmap" class="menu-item active learner" onclick="selectTab('roadmap')">
+              <span>🎯</span> My Roadmap
+            </div>
+            <div id="menu-find-mentor" class="menu-item" onclick="selectTab('find-mentor')">
+              <span>👨‍🏫</span> Find Match
+            </div>
+            <div id="menu-sessions" class="menu-item" onclick="selectTab('sessions')">
+              <span>📅</span> Active Sessions
+            </div>
+            <div id="menu-projects" class="menu-item" onclick="selectTab('projects')">
+              <span>💻</span> Hands-on Projects
+            </div>
+          </nav>
+          
+          <!-- AI Buddy Advice Box -->
+          <div class="ai-card learner-mode">
+            <div class="ai-card-header">
+              <div class="ai-pulse-dot"></div>
+              AI Study Companion
+            </div>
+            <p id="learner-ai-text">Analyzing your learning gaps... You currently lack SQL Database Essentials and NumPy. I suggest booking a session with Rahul.</p>
+          </div>
+        </div>
+        
+        <!-- Tab Contents -->
+        <div class="dashboard-content">
+          
+          <!-- Tab 1: Roadmap Flow -->
+          <div id="panel-roadmap" class="tab-panel active">
+            <div class="section-title-bar">
+              <div>
+                <h2>Custom Roadmaps</h2>
+                <p>Track your progression milestones. Complete projects or book sessions to unlock nodes.</p>
+              </div>
+              <div class="roadmap-progress">
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                  <span>Goal Completion</span>
+                  <span id="roadmap-pct-value" style="font-weight: 700;">20%</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div id="roadmap-progress-fill" class="progress-bar-fill"></div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="roadmap-container">
+              <div class="roadmap-flow" id="roadmap-flow">
+                <!-- Roadmap nodes rendered dynamically -->
+              </div>
+            </div>
+          </div>
+          
+          <!-- Tab 2: Find Mentors -->
+          <div id="panel-find-mentor" class="tab-panel">
+            <div class="section-title-bar">
+              <div>
+                <h2>AI Mentor Matches</h2>
+                <p>These senior students possess verified accomplishments. Book a session using your credits.</p>
+              </div>
+            </div>
+            
+            <div class="mentors-grid" id="mentors-grid">
+              <!-- Mentors rendered dynamically -->
+            </div>
+          </div>
+          
+          <!-- Tab 3: Active Sessions -->
+          <div id="panel-sessions" class="tab-panel">
+            <div class="section-title-bar">
+              <div>
+                <h2>Your Scheduled Sessions</h2>
+                <p>Confirmed sessions display a 'Join Classroom' trigger. Enter to write code in real-time.</p>
+              </div>
+            </div>
+            
+            <div class="sessions-list" id="sessions-list-learner">
+              <!-- Sessions rendered dynamically -->
+            </div>
+          </div>
+          
+          <!-- Tab 4: Projects -->
+          <div id="panel-projects" class="tab-panel">
+            <div class="section-title-bar">
+              <div>
+                <h2>AI Recommended Projects</h2>
+                <p>Put your knowledge into practice. Submit projects to earn credits and check off roadmap nodes.</p>
+              </div>
+            </div>
+            
+            <div class="projects-grid" id="projects-grid">
+              <!-- Projects rendered dynamically -->
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 4. MENTOR DASHBOARD VIEW -->
+    <section id="view-mentor-dashboard" class="view-section">
+      <div class="dashboard-grid">
+        <!-- Sidebar -->
+        <div class="sidebar">
+          <div class="user-card">
+            <div class="avatar mentor">R</div>
+            <div class="user-info">
+              <h3>Rahul</h3>
+              <p>Final Year CSE Senior</p>
+            </div>
+          </div>
+          
+          <nav class="sidebar-menu">
+            <div id="menu-requests" class="menu-item active mentor" onclick="selectTab('requests')">
+              <span>📬</span> Student Bookings
+            </div>
+            <div id="menu-portfolio" class="menu-item" onclick="selectTab('portfolio')">
+              <span>💼</span> My Achievements
+            </div>
+          </nav>
+          
+          <!-- AI Mentor Briefing Box -->
+          <div class="ai-card mentor-mode">
+            <div class="ai-card-header">
+              <div class="ai-pulse-dot"></div>
+              AI Mentor Advisor
+            </div>
+            <p id="mentor-ai-text">Loading session data... Verify new certifications to unlock higher credit pricing.</p>
+          </div>
+        </div>
+        
+        <!-- Tab Contents -->
+        <div class="dashboard-content">
+          
+          <!-- Tab 1: Student Requests -->
+          <div id="panel-requests" class="tab-panel active">
+            <div class="section-title-bar">
+              <div>
+                <h2>Incoming Bookings</h2>
+                <p>Accept bookings to start classrooms. The AI session briefing card will appear on the left.</p>
+              </div>
+            </div>
+            
+            <div class="sessions-list" id="requests-list">
+              <!-- Render requests dynamically -->
+            </div>
+          </div>
+          
+          <!-- Tab 2: Portfolio Verification -->
+          <div id="panel-portfolio" class="tab-panel">
+            <div class="section-title-bar">
+              <div>
+                <h2>Verified Experience Portfolio</h2>
+                <p>Your achievements are verified by the platform AI. Recruiting partners can view these records.</p>
+              </div>
+            </div>
+            
+            <!-- Stats overview box -->
+            <div class="stat-box-container">
+              <div class="stat-box mentor-theme">
+                <h4>Learners</h4>
+                <div class="stat-number" id="stats-students-count">30</div>
+              </div>
+              <div class="stat-box mentor-theme">
+                <h4>Hours</h4>
+                <div class="stat-number" id="stats-hours-count">45</div>
+              </div>
+              <div class="stat-box reputation-theme">
+                <h4>Reputation</h4>
+                <div class="stat-number" id="stats-reputation-count">180</div>
+              </div>
+              <div class="stat-box credit-theme">
+                <h4>Credits</h4>
+                <div class="stat-number" id="stats-credits-count">85</div>
+              </div>
+            </div>
+            
+            <div class="portfolio-card">
+              <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">Connected Credentials</h3>
+              <p style="color: var(--text-secondary); font-size: 0.85rem;">Linked resources confirming your expertise.</p>
+              
+              <div class="portfolio-list" id="portfolio-list">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 5. CLASSROOM / SESSION SANDBOX VIEW -->
+    <section id="view-classroom" class="view-section">
+      <div class="classroom-container">
+        
+        <!-- Left Panel: Video + Chat -->
+        <div class="classroom-panel">
+          <div class="classroom-header-bar">
+            <h3 style="font-size: 1.1rem;" id="classroom-topic">Python Basics (Loops & Recursion)</h3>
+            <span style="font-size: 0.85rem; color: var(--reputation-color); font-weight: 600;">● Live Connection</span>
+          </div>
+          
+          <div class="classroom-body">
+            <!-- Simulated Video Feeds -->
+            <div class="webcam-grid">
+              <div class="webcam-stream">
+                <div class="webcam-canvas">
+                  <div class="avatar learner" style="width:64px; height:64px; font-size: 1.6rem;">A</div>
+                </div>
+                <span class="webcam-label">Learner (Ananya)</span>
+              </div>
+              <div class="webcam-stream">
+                <div class="webcam-canvas">
+                  <div class="avatar mentor" style="width:64px; height:64px; font-size: 1.6rem; color:var(--bg-primary);">R</div>
+                </div>
+                <span class="webcam-label">Mentor (Rahul)</span>
+              </div>
+            </div>
+            
+            <!-- Classroom Chat -->
+            <div class="chat-box">
+              <div class="chat-messages" id="chat-messages">
+                <!-- Chat contents -->
+              </div>
+              <div class="chat-input-bar">
+                <input type="text" id="chat-input" class="chat-input" placeholder="Type a message to your partner..." onkeydown="if(event.key === 'Enter') sendChatMessage()">
+                <button class="chat-send-btn" onclick="sendChatMessage()">Send</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Right Panel: Code Notepad + AI advisor -->
+        <div class="classroom-panel">
+          <div class="classroom-header-bar">
+            <span style="font-size: 0.85rem; color: var(--text-secondary);" id="classroom-user-names">Learner: Ananya | Mentor: Rahul</span>
+            <button id="classroom-finish-btn" class="btn-sm btn-mentor" onclick="finishClassroomSession()">Finish Lesson</button>
+          </div>
+          
+          <div class="classroom-body">
+            <!-- Active AI advice card -->
+            <div id="classroom-ai-coach-card" class="classroom-ai-coach learner-mode">
+              <div class="classroom-ai-avatar">🤖</div>
+              <div class="classroom-ai-content">
+                <h4 id="classroom-ai-name">StudyBuddy AI</h4>
+                <p id="classroom-ai-tip">Tip: Write small functional test routines. Make sure to try list comprehensions for cleaner syntax.</p>
+              </div>
+            </div>
+            
+            <!-- Collaborative Editor -->
+            <textarea id="classroom-editor" class="sync-editor" placeholder="// Type shared code scripts here..."></textarea>
+          </div>
+        </div>
+        
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODALS -->
+  
+  <!-- Modal 1: Mentor Demo Video -->
+  <div id="demo-modal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeDemoModal()">×</button>
+      <h2 style="font-size: 1.5rem; margin-bottom: 0.25rem;">Mentor Demo Video</h2>
+      <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1.2rem;">Watch <span id="demo-mentor-name">Rahul</span> demonstrate their coding and communication style.</p>
+      
+      <!-- Video Frame Custom Component -->
+      <div id="video-container" class="video-player-container">
+        <div class="mock-video-canvas">
+          <div class="video-playing-screen">
+            <div class="video-code-lines" id="video-code-lines">
+              <!-- Animated lines printed here -->
+            </div>
+          </div>
+        </div>
+        <div class="video-controls">
+          <button class="play-pause-btn" onclick="playMockVideo()">▶ Play</button>
+          <div class="video-progress-line">
+            <div class="video-progress-fill" id="video-progress-fill"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div style="margin-top: 1.5rem; text-align: right;">
+        <button class="btn btn-secondary" onclick="closeDemoModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Booking Scheduler -->
+  <div id="booking-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 480px;">
+      <button class="close-modal" onclick="closeBookingModal()">×</button>
+      <h2 style="font-size: 1.5rem; margin-bottom: 0.25rem;">Book Learning Session</h2>
+      <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1.5rem;">Schedule a 1-on-1 coding review session with <span id="booking-mentor-name" style="font-weight: 700; color:var(--text-primary);">Rahul</span>.</p>
+      
+      <div class="form-group">
+        <label for="booking-topic">Session Topic</label>
+        <input type="text" id="booking-topic" class="form-input" placeholder="e.g. Pandas and array manipulation">
+      </div>
+      
+      <div class="form-group" style="margin-top: 1.2rem;">
+        <label>Credit Transaction Summary</label>
+        <div style="background: var(--bg-primary); border: 1px solid var(--glass-border); padding: 1rem; border-radius: var(--radius-md); display: flex; justify-content: space-between; font-size: 0.9rem;">
+          <div>Session Cost:</div>
+          <div style="font-weight: 700; color: var(--credit-color);"><span id="booking-credits-cost">20</span> Credits</div>
+        </div>
+      </div>
+      
+      <div style="margin-top: 2rem; display: flex; justify-content: flex-end; gap: 10px;">
+        <button class="btn btn-secondary" onclick="closeBookingModal()">Cancel</button>
+        <button class="btn btn-learner" onclick="confirmBooking()">Confirm & Book</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -288,6 +288,7 @@ StudyBuddy aims to build a collaborative campus ecosystem where knowledge flows 
 # 👩‍💻 Developer
 
 **Subhashree P**
+
 M.Tech. CSE
 
 **&**
